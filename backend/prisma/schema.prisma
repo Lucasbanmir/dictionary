@@ -1,0 +1,53 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  history   UserWordHistory[]
+  favorites UserWordFavorite[]
+
+  @@map("users")
+}
+
+model Word {
+  id   String @id @default(uuid())
+  word String @unique
+
+  @@map("words")
+}
+
+model UserWordHistory {
+  id     String   @id @default(uuid())
+  userId String   @map("user_id")
+  word   String
+  added  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_word_history")
+}
+
+model UserWordFavorite {
+  id     String   @id @default(uuid())
+  userId String   @map("user_id")
+  word   String
+  added  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, word])
+  @@map("user_word_favorites")
+}
