@@ -5,10 +5,25 @@ import { Alert, Card, CardContent, Chip, IconButton, Paper, Stack, Typography } 
 import Link from 'next/link';
 import { useFavorites } from './hooks/useFavorites';
 import { useFavoriteActions } from './hooks/useFavoritesActions';
+import { useState } from 'react';
+import { ConfirmDialog } from '@/shared/components/ConfirmDialog';
 
 export function FavoritesPage() {
   const favorites = useFavorites(1, 50);
   const { unfavorite } = useFavoriteActions();
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const [word, setSelectedWord] = useState('');
+
+  function handleRemove(word: string) {
+    setSelectedWord(word);
+    setOpenConfirm(true);
+  }
+
+  function confirmRemove() {
+    unfavorite.mutate(word);
+    setOpenConfirm(false);
+  }
 
   return (
     <>
@@ -66,10 +81,7 @@ export function FavoritesPage() {
                         </Typography>
                       </Stack>
 
-                      <IconButton
-                        color="error"
-                        disabled={unfavorite.isPending}
-                        onClick={() => unfavorite.mutate(item.word)}>
+                      <IconButton color="error" disabled={unfavorite.isPending} onClick={() => handleRemove(item.word)}>
                         <FavoriteIcon />
                       </IconButton>
                     </Stack>
@@ -94,6 +106,15 @@ export function FavoritesPage() {
           )}
         </Stack>
       </Paper>
+      <ConfirmDialog
+        open={openConfirm}
+        title="Remove favorite"
+        description="You are about to remove this word from your favorites. Are you sure you want to proceed?"
+        confirmText="Remove"
+        cancelText="Keep"
+        onConfirm={confirmRemove}
+        onClose={() => setOpenConfirm(false)}
+      />
     </>
   );
 }
