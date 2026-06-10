@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { RedisModule } from './redis/redis.module';
 import { AuthModule } from './auth/auth.module';
 import { EntriesModule } from './entries/entries.module';
+import { UserModule } from './user/user.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -18,6 +19,7 @@ import configuration from './config/configuration';
     RedisModule,
     AuthModule,
     EntriesModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
