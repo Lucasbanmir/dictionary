@@ -15,6 +15,7 @@ import {
 import Link from 'next/link';
 import { FormEvent, useState } from 'react';
 import { useSignIn } from '../../hooks/useSignIn';
+import Image from 'next/image';
 
 export function SigninPage() {
   const signIn = useSignIn();
@@ -52,7 +53,7 @@ export function SigninPage() {
         }}>
         <Stack component="form" onSubmit={handleSubmit} spacing={3}>
           <Stack spacing={1.5} sx={{ alignItems: 'center' }}>
-            <MenuBookIcon color="primary" sx={{ fontSize: 48 }} />
+            <Image src="/logo.png" alt="Logo" width={48} height={48} />
 
             <Typography color="primary" variant="h5" sx={{ fontWeight: 700 }}>
               Dictionary
