@@ -2,17 +2,10 @@
 
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {
-  AppBar,
-  Avatar,
-  Button,
-  Stack,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { AppBar, Avatar, Button, Stack, Toolbar, Typography } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getStoredUser } from '@/features/auth/utils/auth-storage';
+import { getStoredUser } from '@/features/auth/utils/authStorage';
 import { useLogout } from '@/features/auth/hooks/useLogout';
 
 const links = [
@@ -36,31 +29,18 @@ export function Navigation() {
         bgcolor: 'rgba(255,255,255,0.9)',
         borderBottom: '1px solid',
         borderColor: 'divider',
-      }}
-    >
+      }}>
       <Toolbar>
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ mr: 4, alignItems: 'center' }}
-        >
+        <Stack direction="row" spacing={1} sx={{ mr: 4, alignItems: 'center' }}>
           <MenuBookIcon color="primary" />
 
-          <Typography
-            color="primary"
-            variant="h6"
-            sx={{ fontWeight: 700 }}
-          >
+          <Typography color="primary" variant="h6" sx={{ fontWeight: 700 }}>
             Dictionary
           </Typography>
         </Stack>
 
-        <Stack
-          direction="row"
-          spacing={1}
-          sx={{ flexGrow: 1 }}
-        >
-          {links.map((link) => {
+        <Stack direction="row" spacing={1} sx={{ flexGrow: 1 }}>
+          {links.map(link => {
             const active = pathname === link.href;
 
             return (
@@ -72,8 +52,7 @@ export function Navigation() {
                 variant={active ? 'contained' : 'text'}
                 sx={{
                   borderRadius: 999,
-                }}
-              >
+                }}>
                 {link.label}
               </Button>
             );
@@ -81,17 +60,12 @@ export function Navigation() {
         </Stack>
 
         {user && (
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center' }}
-          >
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Avatar
               sx={{
                 width: 32,
                 height: 32,
-              }}
-            >
+              }}>
               {user.name[0]?.toUpperCase()}
             </Avatar>
 
@@ -102,16 +76,11 @@ export function Navigation() {
                   xs: 'none',
                   sm: 'block',
                 },
-              }}
-            >
+              }}>
               {user.name}
             </Typography>
 
-            <Button
-              color="inherit"
-              onClick={logout}
-              startIcon={<LogoutIcon />}
-            >
+            <Button color="inherit" onClick={logout} startIcon={<LogoutIcon />}>
               Logout
             </Button>
           </Stack>
