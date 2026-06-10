@@ -2,18 +2,12 @@
 
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import LogoutIcon from '@mui/icons-material/Logout';
-import {
-  AppBar,
-  Avatar,
-  Button,
-  Stack,
-  Toolbar,
-  Typography,
-} from '@mui/material';
+import { AppBar, Avatar, Box, Button, Stack, Toolbar, Typography } from '@mui/material';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { getStoredUser } from '@/features/auth/utils/auth-storage';
+import { getStoredUser } from '@/features/auth/utils/authStorage';
 import { useLogout } from '@/features/auth/hooks/useLogout';
+import Image from 'next/image';
 
 const links = [
   { href: '/', label: 'Home' },
@@ -36,21 +30,40 @@ export function Navigation() {
         bgcolor: 'rgba(255,255,255,0.9)',
         borderBottom: '1px solid',
         borderColor: 'divider',
-      }}
-    >
-      <Toolbar>
+      }}>
+      <Toolbar
+        sx={{
+          flexDirection: {
+            xs: 'column',
+            sm: 'row',
+          },
+          gap: {
+            xs: 2,
+            sm: 0,
+          },
+          py: {
+            xs: 2,
+            sm: 0,
+          },
+        }}>
         <Stack
           direction="row"
           spacing={1}
-          sx={{ mr: 4, alignItems: 'center' }}
-        >
-          <MenuBookIcon color="primary" />
+          sx={{
+            alignItems: 'center',
+            mr: {
+              xs: 0,
+              sm: 4,
+            },
+            justifyContent: 'center',
+            width: {
+              xs: '100%',
+              sm: 'auto',
+            },
+          }}>
+          <Image src="/logo.png" alt="Logo" width={32} height={32} />
 
-          <Typography
-            color="primary"
-            variant="h6"
-            sx={{ fontWeight: 700 }}
-          >
+          <Typography color="primary" variant="h6" sx={{ fontWeight: 700 }}>
             Dictionary
           </Typography>
         </Stack>
@@ -58,9 +71,19 @@ export function Navigation() {
         <Stack
           direction="row"
           spacing={1}
-          sx={{ flexGrow: 1 }}
-        >
-          {links.map((link) => {
+          sx={{
+            flexGrow: {
+              xs: 0,
+              sm: 1,
+            },
+            width: {
+              xs: '100%',
+              sm: 'auto',
+            },
+            justifyContent: 'center',
+            flexWrap: 'wrap',
+          }}>
+          {links.map(link => {
             const active = pathname === link.href;
 
             return (
@@ -72,8 +95,7 @@ export function Navigation() {
                 variant={active ? 'contained' : 'text'}
                 sx={{
                   borderRadius: 999,
-                }}
-              >
+                }}>
                 {link.label}
               </Button>
             );
@@ -81,17 +103,12 @@ export function Navigation() {
         </Stack>
 
         {user && (
-          <Stack
-            direction="row"
-            spacing={1.5}
-            sx={{ alignItems: 'center' }}
-          >
+          <Stack direction="row" spacing={1.5} sx={{ alignItems: 'center' }}>
             <Avatar
               sx={{
                 width: 32,
                 height: 32,
-              }}
-            >
+              }}>
               {user.name[0]?.toUpperCase()}
             </Avatar>
 
@@ -102,8 +119,7 @@ export function Navigation() {
                   xs: 'none',
                   sm: 'block',
                 },
-              }}
-            >
+              }}>
               {user.name}
             </Typography>
 
@@ -111,8 +127,19 @@ export function Navigation() {
               color="inherit"
               onClick={logout}
               startIcon={<LogoutIcon />}
-            >
-              Logout
+              sx={{
+                minWidth: 'auto',
+              }}>
+              <Box
+                component="span"
+                sx={{
+                  display: {
+                    xs: 'none',
+                    sm: 'inline',
+                  },
+                }}>
+                Logout
+              </Box>
             </Button>
           </Stack>
         )}

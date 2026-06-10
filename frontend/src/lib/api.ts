@@ -1,4 +1,4 @@
-import { clearAuthSession, getAuthToken } from '../features/auth/utils/auth-storage';
+import { clearAuthSession, getAuthToken } from '@/features/auth/utils/authStorage';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 
