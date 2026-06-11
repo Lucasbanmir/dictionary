@@ -22,13 +22,14 @@ import { AppLayout } from '@/shared/layouts/AppLayout';
 import { useHistory } from './hooks/useHistory';
 import { useProfile } from '@/features/home/hooks/useProfile';
 import { ProtectedRoute } from '@/shared/ProtectedRoute';
+import { useClearHistory } from './hooks/useClearHistory';
 
 export function HomePage() {
   const [search, setSearch] = useState('');
 
   const router = useRouter();
-
   const history = useHistory();
+  const clearHistory = useClearHistory();
   const profile = useProfile();
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
@@ -92,12 +93,27 @@ export function HomePage() {
             </Stack>
           </Paper>
 
-          <Stack direction="row" sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+          <Stack
+            direction="row"
+            sx={{
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
             <Typography component="h2" variant="h5" sx={{ fontWeight: 700 }}>
               Search History
             </Typography>
 
-            <Chip icon={<HistoryIcon />} label={`${history.data?.results.length ?? 0} searches`} />
+            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+              <Chip icon={<HistoryIcon />} label={`Last ${history.data?.results.length ?? 0} searches`} />
+
+              <Button
+                color="error"
+                disabled={clearHistory.isPending || !history.data?.results.length}
+                onClick={() => clearHistory.mutate()}
+                variant="outlined">
+                Clear History
+              </Button>
+            </Stack>
           </Stack>
 
           {history.isError && <Alert severity="error">Failed to load search history.</Alert>}
