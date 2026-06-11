@@ -76,21 +76,39 @@ export function DictionaryPage() {
 
         {words.isError && <Alert severity="error">Failed to load dictionary.</Alert>}
 
-        <Box
-          sx={{
-            display: 'grid',
-            gap: 2,
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)',
-              lg: 'repeat(4, 1fr)',
-            },
-          }}>
-          {words.data?.results.map(word => (
-            <WordCard key={word} onClick={() => setSelectedWord(word)} word={word} />
-          ))}
-        </Box>
+        {words.isLoading ? (
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 2,
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+                lg: 'repeat(4, 1fr)',
+              },
+            }}>
+            {Array.from({ length: 24 }).map((_, i) => (
+              <Paper key={i} sx={{ height: 80, borderRadius: 2, opacity: 0.6 }} />
+            ))}
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              display: 'grid',
+              gap: 2,
+              gridTemplateColumns: {
+                xs: '1fr',
+                sm: 'repeat(2, 1fr)',
+                md: 'repeat(3, 1fr)',
+                lg: 'repeat(4, 1fr)',
+              },
+            }}>
+            {words.data?.results.map(word => (
+              <WordCard key={word} onClick={() => setSelectedWord(word)} word={word} />
+            ))}
+          </Box>
+        )}
 
         <Paper
           elevation={2}
