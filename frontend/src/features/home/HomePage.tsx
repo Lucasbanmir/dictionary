@@ -14,6 +14,7 @@ import {
   Typography,
   InputAdornment,
   Button,
+  CircularProgress,
 } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -45,120 +46,126 @@ export function HomePage() {
   return (
     <ProtectedRoute>
       <AppLayout>
-        <Stack spacing={4}>
-          <Paper
-            elevation={2}
-            sx={{
-              p: 4,
-              borderRadius: 4,
-            }}>
-            <Stack spacing={1}>
-              <Typography color="text.secondary">Welcome back,</Typography>
-
-              <Typography component="h1" variant="h4" sx={{ fontWeight: 700 }}>
-                {profile.data?.name ?? 'Reader'}
-              </Typography>
-
-              <Typography color="text.secondary">Search, save and organize your favorite words.</Typography>
-            </Stack>
-          </Paper>
-
-          <Paper
-            component="section"
-            elevation={2}
-            sx={{
-              p: 4,
-              borderRadius: 4,
-            }}>
-            <Stack component="form" direction={{ xs: 'column', md: 'row' }} onSubmit={handleSubmit} spacing={2}>
-              <TextField
-                fullWidth
-                label="Search an English word"
-                value={search}
-                onChange={event => setSearch(event.target.value)}
-                slotProps={{
-                  input: {
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon />
-                      </InputAdornment>
-                    ),
-                  },
-                }}
-              />
-
-              <Button size="large" sx={{ minWidth: 140 }} type="submit" variant="contained">
-                Search
-              </Button>
-            </Stack>
-          </Paper>
-
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}>
-            <Typography component="h2" variant="h5" sx={{ fontWeight: 700 }}>
-              Search History
-            </Typography>
-
-            <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
-              <Chip icon={<HistoryIcon />} label={`Last ${history.data?.results.length ?? 0} searches`} />
-
-              <Button
-                color="error"
-                disabled={clearHistory.isPending || !history.data?.results.length}
-                onClick={() => clearHistory.mutate()}
-                variant="outlined">
-                Clear History
-              </Button>
-            </Stack>
+        {history.isLoading ? (
+          <Stack sx={{ alignItems: 'center', py: 6 }}>
+            <CircularProgress size={32} />
           </Stack>
-
-          {history.isError && <Alert severity="error">Failed to load search history.</Alert>}
-
-          {history.data?.results.length ? (
-            <Stack spacing={2}>
-              {history.data.results.map(item => (
-                <Card
-                  component={Link}
-                  href={`/word/${encodeURIComponent(item.word)}`}
-                  key={`${item.word}-${item.added}`}
-                  sx={{
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    transition: '0.2s',
-                    '&:hover': {
-                      transform: 'translateY(-2px)',
-                    },
-                  }}>
-                  <CardContent>
-                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                      {item.word}
-                    </Typography>
-
-                    <Typography color="text.secondary" variant="body2">
-                      {new Date(item.added).toLocaleString('pt-BR')}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              ))}
-            </Stack>
-          ) : (
+        ) : (
+          <Stack spacing={4}>
             <Paper
+              elevation={2}
               sx={{
-                p: 6,
-                textAlign: 'center',
+                p: 4,
+                borderRadius: 4,
               }}>
-              <Typography gutterBottom variant="h6">
-                No searches yet
+              <Stack spacing={1}>
+                <Typography color="text.secondary">Welcome back,</Typography>
+
+                <Typography component="h1" variant="h4" sx={{ fontWeight: 700 }}>
+                  {profile.data?.name ?? 'Reader'}
+                </Typography>
+
+                <Typography color="text.secondary">Search, save and organize your favorite words.</Typography>
+              </Stack>
+            </Paper>
+
+            <Paper
+              component="section"
+              elevation={2}
+              sx={{
+                p: 4,
+                borderRadius: 4,
+              }}>
+              <Stack component="form" direction={{ xs: 'column', md: 'row' }} onSubmit={handleSubmit} spacing={2}>
+                <TextField
+                  fullWidth
+                  label="Search an English word"
+                  value={search}
+                  onChange={event => setSearch(event.target.value)}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SearchIcon />
+                        </InputAdornment>
+                      ),
+                    },
+                  }}
+                />
+
+                <Button size="large" sx={{ minWidth: 140 }} type="submit" variant="contained">
+                  Search
+                </Button>
+              </Stack>
+            </Paper>
+
+            <Stack
+              direction="row"
+              sx={{
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <Typography component="h2" variant="h5" sx={{ fontWeight: 700 }}>
+                Search History
               </Typography>
 
-              <Typography color="text.secondary">Start searching words to build your history.</Typography>
-            </Paper>
-          )}
-        </Stack>
+              <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>
+                <Chip icon={<HistoryIcon />} label={`Last ${history.data?.results.length ?? 0} searches`} />
+
+                <Button
+                  color="error"
+                  disabled={clearHistory.isPending || !history.data?.results.length}
+                  onClick={() => clearHistory.mutate()}
+                  variant="outlined">
+                  Clear History
+                </Button>
+              </Stack>
+            </Stack>
+
+            {history.isError && <Alert severity="error">Failed to load search history.</Alert>}
+
+            {history.data?.results.length ? (
+              <Stack spacing={2}>
+                {history.data.results.map(item => (
+                  <Card
+                    component={Link}
+                    href={`/word/${encodeURIComponent(item.word)}`}
+                    key={`${item.word}-${item.added}`}
+                    sx={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      transition: '0.2s',
+                      '&:hover': {
+                        transform: 'translateY(-2px)',
+                      },
+                    }}>
+                    <CardContent>
+                      <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                        {item.word}
+                      </Typography>
+
+                      <Typography color="text.secondary" variant="body2">
+                        {new Date(item.added).toLocaleString('pt-BR')}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                ))}
+              </Stack>
+            ) : (
+              <Paper
+                sx={{
+                  p: 6,
+                  textAlign: 'center',
+                }}>
+                <Typography gutterBottom variant="h6">
+                  No searches yet
+                </Typography>
+
+                <Typography color="text.secondary">Start searching words to build your history.</Typography>
+              </Paper>
+            )}
+          </Stack>
+        )}
       </AppLayout>
     </ProtectedRoute>
   );
