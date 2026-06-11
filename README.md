@@ -108,6 +108,7 @@ DELETE /user/me/history                           # apaga todo histórico
 ```
 
 Docs interativa:
+
 Render
 https://dictionary-8jo7.onrender.com/docs
 
