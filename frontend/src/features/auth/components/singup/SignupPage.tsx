@@ -53,7 +53,7 @@ export function SignupPage() {
           p: 4,
           borderRadius: 4,
         }}>
-        <Stack component="form" onSubmit={handleSubmit} spacing={3}>
+        <Stack aria-label="signup-form" component="form" onSubmit={handleSubmit} spacing={3}>
           <Stack spacing={1.5} sx={{ alignItems: 'center' }}>
             <Image src="/logo.png" alt="Logo" width={48} height={48} />
 
