@@ -4,12 +4,23 @@ Full-stack app para buscar palavras em inglês com pronúncia, áudio, definiç�
 
 ## Tech Stack
 
-| Camada | Stack |
-|---|---|
+| Camada   | Stack                                               |
+| -------- | --------------------------------------------------- |
 | Frontend | Next.js 15 + TypeScript + Material-UI + React Query |
-| Backend | NestJS 10 + Prisma + PostgreSQL + Redis |
-| Auth | JWT (Bearer token) |
-| Testes | Vitest (frontend), Jest (backend) |
+| Backend  | NestJS 10 + Prisma + PostgreSQL + Redis             |
+| Auth     | JWT (Bearer token)                                  |
+| Testes   | Vitest (frontend), Jest (backend)                   |
+
+---
+
+## Deploy
+
+- Frontend: Vercel https://dictionary-frontend-pearl.vercel.app
+- Backend: Render https://dictionary-8jo7.onrender.com
+- Database: Neon PostgreSQL (https://neon.tech)
+- Redis: Upstash (https://upstash.com)
+
+---
 
 ## Getting Started
 
@@ -40,50 +51,6 @@ npm install
 npm run dev
 ```
 
-## Estrutura do Projeto
-
-```
-.
-├── docker-compose.yml
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma           # Modelos (User, Word, History, Favorites)
-│   │   └── migrations/
-│   ├── src/
-│   │   ├── auth/                   # JWT signin/signup
-│   │   ├── entries/                # GET palavras, POST favoritos
-│   │   ├── user/                   # Perfil, histórico, favoritos
-│   │   ├── prisma/                 # PrismaClient wrapper
-│   │   ├── redis/                  # Redis wrapper (cache 1h)
-│   │   ├── common/
-│   │   │   ├── guards/             # JwtAuthGuard
-│   │   │   ├── decorators/         # @CurrentUser
-│   │   │   └── filters/            # HttpExceptionFilter
-│   │   └── main.ts
-│   └── package.json
-│
-└── frontend/
-    ├── src/
-    │   ├── app/
-    │   │   ├── (auth)/             # signin, signup (públicas)
-    │   │   ├── (app)/              # dictionary, word, favorites (protegidas)
-    │   │   ├── layout.tsx
-    │   │   └── providers.tsx        # React Query + MUI Theme
-    │   ├── features/               # Feature-based: auth, dictionary, word, favorites
-    │   │   └── [feature]/
-    │   │       ├── components/
-    │   │       ├── hooks/
-    │   │       ├── services/
-    │   │       ├── types/
-    │   │       └── utils/
-    │   ├── shared/                 # Componentes reutilizáveis, layouts
-    │   ├── lib/
-    │   │   ├── api.ts              # apiRequest (fetch + token + error handling)
-    │   │   └── queryKeys.ts        # React Query key factory
-    │   └── theme.ts
-    └── package.json
-```
-
 ## Como Funciona
 
 ### Fluxo de Autenticação
@@ -104,13 +71,13 @@ npm run dev
 
 ## Páginas do Frontend
 
-| Rota | O que faz |
-|---|---|
-| `/signin` | Login |
-| `/signup` | Cadastro |
-| `/dictionary` | Lista ~370k palavras com busca e paginação |
+| Rota          | O que faz                                                  |
+| ------------- | ---------------------------------------------------------- |
+| `/signin`     | Login                                                      |
+| `/signup`     | Cadastro                                                   |
+| `/dictionary` | Lista ~370k palavras com busca e paginação                 |
 | `/word/:word` | Detalhes: fonética, áudio, definições, exemplos, sinônimos |
-| `/favorites` | Palavras marcadas como favoritas |
+| `/favorites`  | Palavras marcadas como favoritas                           |
 
 ## API
 
@@ -140,20 +107,43 @@ GET    /user/me/favorites?page=1&limit=20
 DELETE /user/me/history                           # apaga todo histórico
 ```
 
-Docs interativa: http://localhost:3000/docs
+Docs interativa:
+Render
+https://dictionary-8jo7.onrender.com/docs
+
+Localhost
+http://localhost:3000/docs
+
+## Testes
+
+A aplicação conta com uma sólida cobertura de testes automatizados para garantir a estabilidade tanto na interface quanto na API.
+
+**Frontend (Vitest & Testing Library)**
+
+- ✅ **50 testes** aprovados (distribuídos em 6 arquivos)
+- Para rodar localmente:
+
+```bash
+cd frontend
+npm run test
+```
+
+**Backend (Jest)**
+
+- ✅ **74 testes** aprovados (distribuídos em 6 test suites)
+
+- Para rodar localmente:
+
+```bash
+cd backend
+npm run test
+```
 
 ---
 
-## Detalhes técnicos que podem gerar dúvida
+## Observações técnicas
 
-**Por que dois tsconfigs no backend?**
-O `tsconfig.json` é para a IDE (inclui todos os arquivos). O `tsconfig.build.json` é usado exclusivamente pelo `nest build` em produção — ele define `rootDir: "./src"` para que o output vá para `dist/main.js` (sem o prefixo `dist/src/`) e exclui o diretório `scripts/` do bundle.
-
-**Por que o script de seed usa ts-node em vez do arquivo compilado?**
-O diretório `scripts/` é excluído do `tsconfig.build.json` propositalmente (é um script utilitário, não parte da aplicação). O Dockerfile copia a pasta `scripts/` e o `tsconfig.json` para o container runner, e o `npm run db:seed` usa `ts-node` para executá-lo diretamente.
-
-**Por que `binaryTargets` no schema.prisma?**
-O Prisma precisa de binários específicos para cada plataforma. Como o container usa Alpine Linux (musl libc, não glibc), é necessário declarar `linux-musl-openssl-3.0.x` nos targets. Sem isso, o Prisma falha ao tentar detectar a versão do OpenSSL. O Dockerfile também instala o `openssl` via `apk add`.
-
-**Por que a porta do Redis é 6399?**
-A `6379` já estava em uso no host. O container Redis escuta na `6379` internamente (os containers se comunicam por nome via rede Docker interna), mas o mapeamento para o host usa `6399:6379`.
+- Redis usado para cache (TTL 1h)
+- Prisma com PostgreSQL (Neon em produção)
+- JWT para autenticação
+- Arquitetura feature-based no frontend
